@@ -5,7 +5,6 @@ import android.graphics.Color;
 import android.media.audiofx.Equalizer;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.NumberPicker;
@@ -59,13 +58,12 @@ public class MainActivity extends Activity {
 	
 	public void setVolume(short value){
 		try{
+			//maximum is usually 200%
 			short level =  (short)(volumeLimits[0] + (short)((volumeLimits[1]-volumeLimits[0])*(value/40.0f)));
 			eq.setEnabled(true);
 			short numbands = eq.getNumberOfBands();
 			for(short band = 0; band < numbands; band++){
-				Log.d("butts","from "+eq.getBandLevel(band));
 				short bandLevel = (short)(level+initialValues[band]);
-				Log.d("butts","setting "+bandLevel);
 				eq.setBandLevel(band, bandLevel);
 			}
 		}
@@ -79,7 +77,6 @@ public class MainActivity extends Activity {
 			eq.release();
 		}catch(Exception e){}//if release fails then creation probably had also failed
 		try{
-			Log.d("butts","eq "+sessionNum);
 			eq = new Equalizer(1000, sessionNum);
 			volumeLimits = eq.getBandLevelRange();
 			initialValues = new short[eq.getNumberOfBands()];
@@ -89,7 +86,6 @@ public class MainActivity extends Activity {
 			setVolume((short) volSlider.getProgress());
 		}
 		catch(Exception e){
-			Log.d("butts",e.getClass().getSimpleName());
 		}
 	}
 	
@@ -163,7 +159,6 @@ public class MainActivity extends Activity {
 		@Override
 		public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
 			if(!masterSwitch.isChecked())return;
-			Log.d("butts",getClass().getSimpleName());
 			setAudioSession(newVal);
 			if(scanning && newVal < oldVal){
 				toggleScanState();
